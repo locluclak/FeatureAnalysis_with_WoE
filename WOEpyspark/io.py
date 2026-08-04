@@ -161,6 +161,9 @@ def save_iv_csv(iv_dict, filepath):
 def save_iv_html(iv_dict, plots=None, output_path="output/iv_cases.html", title="IV Summary"):
     """Save build_three_cases results and optional plots to a single HTML file.
 
+    Images are saved as separate PNG files in the same directory as the HTML,
+    then referenced via relative paths (not embedded).
+
     Args:
         iv_dict (dict): Dictionary mapping case names to pandas
             DataFrames from build_three_cases.
@@ -172,7 +175,18 @@ def save_iv_html(iv_dict, plots=None, output_path="output/iv_cases.html", title=
     Returns:
         str: The resolved output file path.
     """
-    os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+    out_dir = os.path.dirname(output_path) or "."
+    os.makedirs(out_dir, exist_ok=True)
+
+    img_dir = os.path.join(out_dir, "images")
+    saved_plots = {}
+    if plots:
+        os.makedirs(img_dir, exist_ok=True)
+        for name, fig in plots.items():
+            safe_name = name.replace(" ", "_").replace("/", "_")
+            img_path = os.path.join(img_dir, f"{safe_name}.png")
+            fig.savefig(img_path, dpi=100, bbox_inches="tight")
+            saved_plots[name] = os.path.relpath(img_path, out_dir)
 
     html_parts = [
         "<!DOCTYPE html>",
@@ -202,13 +216,11 @@ def save_iv_html(iv_dict, plots=None, output_path="output/iv_cases.html", title=
         html_parts.append(df.to_html(index=False, float_format="%.6f"))
         html_parts.append("</div>")
 
-    if plots:
-        for name, fig in plots.items():
-            img_b64 = _fig_to_base64(fig)
-            html_parts.append(f"<div class='section'>")
-            html_parts.append(f"<h2>{name}</h2>")
-            html_parts.append(f"<img src='data:image/png;base64,{img_b64}' alt='{name}'>")
-            html_parts.append("</div>")
+    for name, rel_path in saved_plots.items():
+        html_parts.append(f"<div class='section'>")
+        html_parts.append(f"<h2>{name}</h2>")
+        html_parts.append(f"<img src='{rel_path}' alt='{name}'>")
+        html_parts.append("</div>")
 
     html_parts.extend(["</body>", "</html>"])
 
