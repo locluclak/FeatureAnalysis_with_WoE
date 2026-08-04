@@ -4,11 +4,9 @@ Weight of Evidence (WoE) and Information Value (IV) analysis library built on Py
 
 ## Installation
 
-Ensure you have a conda environment named `sacom` with PySpark, pandas, numpy, and matplotlib installed.
-
 ```bash
 conda activate sacom
-pip install pyspark pandas numpy matplotlib openpyxl
+pip install pyspark pandas numpy matplotlib scikit-learn openpyxl
 ```
 
 Place the `WOEpyspark` folder in your project directory so Python can import it.
@@ -19,18 +17,16 @@ Place the `WOEpyspark` folder in your project directory so Python can import it.
 import WOEpyspark as woe
 from pyspark.sql import SparkSession
 
-# Initialize Spark
 spark = SparkSession.builder \
     .appName("woe_analysis") \
     .master("local[4]") \
     .config("spark.sql.execution.arrow.pyspark.enabled", "true") \
     .getOrCreate()
 
-# Load data
 sdf = spark.read.parquet("feature_S5.parquet")
 
-# Split train/test
-train_sdf, test_sdf = woe.stratified_split(sdf, label_col="LABEL")
+# Split train/test (sklearn - exact counts)
+train_sdf, test_sdf = woe.stratified_sklearnsplit(sdf, label_col="LABEL")
 
 # Compute WoE/IV for a discrete variable
 df_woe = woe.woe_discrete(train_sdf, "MY_DISCRETE_VAR", "LABEL")
@@ -38,7 +34,7 @@ df_woe = woe.woe_discrete(train_sdf, "MY_DISCRETE_VAR", "LABEL")
 # Compute WoE/IV for a continuous variable (auto-binning)
 df_woe_cont = woe.woe_continuous(train_sdf, "MY_CONTINUOUS_VAR", "LABEL", n_bins=10)
 
-# Compute WoE/IV for a continuous variable (quantile binning with 10 bins)
+# Compute WoE/IV for a continuous variable (quantile binning)
 df_binned = woe.woe_binned_continuous(train_sdf, "MY_VAR", "LABEL", n_bins=10)
 
 # Plot WoE chart
@@ -61,28 +57,36 @@ woe.save_woe_html(
 
 ## Manual Binning with User-Defined Edges
 
-Define your own bin edges and labels, then apply them as a discrete variable:
-
 ```python
 from pyspark.sql import functions as F
 import numpy as np
 
-# Define edges and labels
-edges = [-np.inf, 300_000_000, 850_000_000, 2_000_000_000, 5_500_000_000, np.inf]
-labels = ["(-inf, 300M]", "(300M, 850M]", "(850M, 2B]", "(2B, 5.5B]", "(5.5B, +inf)"]
+# Define bins once
+bins = [
+    (300_000_000, "(-inf, 300M]"),
+    (850_000_000, "(300M, 850M]"),
+    (2_000_000_000, "(850M, 2B]"),
+    (5_500_000_000, "(2B, 5.5B]"),
+    (np.inf, "(5.5B, +inf)")
+]
 
-# Create bin column using F.when
-col = F.col("TIEN_VA_TIEN_TUONG_DUONG_CK")
+col = F.col(FEATURE_NAME)
+
 bin_expr = (
-    F.when(col.isNull(), F.lit("MISSING"))
-     .when(col == 0, F.lit("ZERO"))
-     .when(col < 300_000_000, F.lit(labels[0]))
-     .when(col < 850_000_000, F.lit(labels[1]))
-     .when(col < 2_000_000_000, F.lit(labels[2]))
-     .when(col < 5_500_000_000, F.lit(labels[3]))
-     .otherwise(F.lit(labels[4]))
+    F.when(col.isNull(), "MISSING")
+     .when(col == 0, "ZERO")
 )
-train_sdf = train_sdf.withColumn("TIEN_VA_TIEN_TUONG_DUONG_CK_BIN", bin_expr)
+
+for upper, label in bins:
+    if np.isinf(upper):
+        bin_expr = bin_expr.otherwise(label)
+    else:
+        bin_expr = bin_expr.when(col < upper, label)
+
+train_sdf = train_sdf.withColumn(
+    "TIEN_VA_TIEN_TUONG_DUONG_CK_BIN",
+    bin_expr
+)
 
 # Compute WoE/IV on the binned variable (now discrete)
 df_manual = woe.woe_discrete(train_sdf, "TIEN_VA_TIEN_TUONG_DUONG_CK_BIN")
@@ -94,9 +98,35 @@ df_manual = woe.woe_discrete(train_sdf, "TIEN_VA_TIEN_TUONG_DUONG_CK_BIN")
 # Build 3 cases: FULL, MISSING_VS_REST, NO_MISSING
 cases = woe.build_three_cases(df_manual, missing_label="MISSING")
 
-print("Case A - Full IV:", cases["full"])
-print("Case B - Missing vs Rest IV:", cases["missing_vs_rest"])
-print("Case C - No Missing IV:", cases["no_missing"])
+# Each case is a pandas DataFrame
+print(type(cases["full"]))           # <class 'pandas.core.frame.DataFrame'>
+print(cases["full"])                 # Full WoE/IV table
+print(cases["missing_vs_rest"])      # MISSING vs NON_MISSING
+print(cases["no_missing"])           # Without MISSING bin
+
+# Save all 3 cases to a single CSV (with Case column)
+woe.save_iv_csv(cases, "output/iv_cases.csv")
+
+# Save all 3 cases + plots to a single HTML file (images saved separately)
+fig_full = woe.plot_woe(cases["full"])
+fig_nomiss = woe.plot_woe(cases["no_missing"])
+
+woe.save_iv_html(
+    iv_dict=cases,
+    plots={"WoE_Full": fig_full, "WoE_NoMissing": fig_nomiss},
+    output_path="output/iv_cases.html",
+    title="IV Summary"
+)
+```
+
+Output structure:
+```
+output/
+├── iv_cases.csv
+├── iv_cases.html
+└── images/
+    ├── WoE_Full.png
+    └── WoE_NoMissing.png
 ```
 
 ## Saving Multiple Results
@@ -134,12 +164,15 @@ woe.save_woe_csvs(
 
 | Function | Description |
 |---|---|
-| `stratified_split(sdf, label_col, test_size, seed)` | Stratified train/test split |
+| `stratified_split(sdf, label_col, test_size, seed)` | Stratified train/test split using PySpark `sampleBy` |
+| `stratified_sklearnsplit(sdf, label_col, test_size, seed)` | Stratified train/test split using sklearn (exact row counts) |
 
 ### I/O
 
 | Function | Description |
 |---|---|
 | `save_woe_csv(df, filepath)` | Save one WoE table to CSV |
-| `save_woe_csvs(tables, output_dir, prefix)` | Save multiple tables to CSV files |
-| `save_woe_html(tables, plots, output_path, title)` | Save all tables + plots to one HTML page |
+| `save_woe_csvs(tables, output_dir, prefix)` | Save multiple tables to separate CSV files |
+| `save_woe_html(tables, plots, output_path, title)` | Save tables + plots to one HTML (images embedded as base64) |
+| `save_iv_csv(iv_dict, filepath)` | Save `build_three_cases` results to one CSV (with Case column) |
+| `save_iv_html(iv_dict, plots, output_path, title)` | Save `build_three_cases` results + plots to HTML (images saved as separate PNGs) |
