@@ -149,6 +149,11 @@ def woe_discrete(sdf, variable_name, label_col="LABEL", smoothing=0.005):
         prop_n_card, prop_n_noncard, WoE, diff_prop_card, diff_WoE,
         IV_detail, IV.
     """
+    sdf = sdf.withColumn(
+        variable_name,
+        F.when(F.col(variable_name).isNull(), F.lit("MISSING"))
+         .otherwise(F.col(variable_name))
+    )
     agg = (
         sdf.groupBy(F.col(variable_name).alias(variable_name))
         .agg(

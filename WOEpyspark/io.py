@@ -158,7 +158,8 @@ def save_iv_csv(iv_dict, filepath):
     return filepath
 
 
-def save_iv_html(iv_dict, plots=None, output_path="output/iv_cases.html", title="IV Summary"):
+def save_iv_html(iv_dict, plots=None, output_path="output/iv_cases.html",
+                 title="IV Summary", bin_info=None):
     """Save build_three_cases results and optional plots to a single HTML file.
 
     Images are saved as separate PNG files in the same directory as the HTML,
@@ -171,6 +172,8 @@ def save_iv_html(iv_dict, plots=None, output_path="output/iv_cases.html", title=
             figure objects. Example: {"WoE_Full": fig1, "WoE_NoMissing": fig2}.
         output_path (str): Output HTML file path (default "output/iv_cases.html").
         title (str): Page title (default "IV Summary").
+        bin_info (dict, optional): Dictionary with manual bin configuration.
+            Keys: "feature", "edges", "labels", "special_bins".
 
     Returns:
         str: The resolved output file path.
@@ -209,6 +212,19 @@ def save_iv_html(iv_dict, plots=None, output_path="output/iv_cases.html", title=
         "<body>",
         f"<h1>{title}</h1>",
     ]
+
+    if bin_info:
+        html_parts.append("<div class='section'>")
+        html_parts.append("<h2>Bin Configuration</h2>")
+        rows = []
+        for edge, label in zip(bin_info.get("edges", []), bin_info.get("labels", [])):
+            rows.append({"Edge": edge, "Label": label})
+        special = bin_info.get("special_bins", [])
+        for s in special:
+            rows.append({"Edge": s, "Label": s})
+        bin_df = pd.DataFrame(rows)
+        html_parts.append(bin_df.to_html(index=False))
+        html_parts.append("</div>")
 
     for name, df in iv_dict.items():
         html_parts.append(f"<div class='section'>")

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<title>IV Summary - AREA_NAME</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+h1 { color: #333; }
+h2 { color: #555; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+table { border-collapse: collapse; margin: 15px 0; width: 100%; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+th { background-color: #f2f2f2; }
+tr:nth-child(even) { background-color: #f9f9f9; }
+img { max-width: 100%; margin: 10px 0; }
+.section { margin-bottom: 30px; }
+</style>
+</head>
+<body>
+<h1>IV Summary - AREA_NAME</h1>
+<div class='section'>
+<h2>full</h2>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>AREA_NAME</th>
+      <th>n_obs</th>
+      <th>prop_card</th>
+      <th>prop_n_obs</th>
+      <th>n_card</th>
+      <th>n_noncard</th>
+      <th>n_card_smooth</th>
+      <th>n_noncard_smooth</th>
+      <th>prop_n_card</th>
+      <th>prop_n_noncard</th>
+      <th>WoE</th>
+      <th>diff_prop_card</th>
+      <th>diff_WoE</th>
+      <th>IV_detail</th>
+      <th>IV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MIEN BAC</td>
+      <td>3920</td>
+      <td>0.002296</td>
+      <td>0.063920</td>
+      <td>9.000000</td>
+      <td>3911.000000</td>
+      <td>9.005000</td>
+      <td>3911.005000</td>
+      <td>0.038640</td>
+      <td>0.064016</td>
+      <td>-0.504853</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.012811</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>DONG NAM BO 1</td>
+      <td>11826</td>
+      <td>0.002875</td>
+      <td>0.192835</td>
+      <td>34.000000</td>
+      <td>11792.000000</td>
+      <td>34.005000</td>
+      <td>11792.005000</td>
+      <td>0.145913</td>
+      <td>0.193014</td>
+      <td>-0.279753</td>
+      <td>0.000579</td>
+      <td>0.225100</td>
+      <td>0.013177</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>HOI SO</td>
+      <td>342</td>
+      <td>0.002924</td>
+      <td>0.005577</td>
+      <td>1.000000</td>
+      <td>341.000000</td>
+      <td>1.005000</td>
+      <td>341.005000</td>
+      <td>0.004312</td>
+      <td>0.005582</td>
+      <td>-0.257993</td>
+      <td>0.000049</td>
+      <td>0.021760</td>
+      <td>0.000327</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>HA NOI</td>
+      <td>5964</td>
+      <td>0.003018</td>
+      <td>0.097249</td>
+      <td>18.000000</td>
+      <td>5946.000000</td>
+      <td>18.005000</td>
+      <td>5946.005000</td>
+      <td>0.077258</td>
+      <td>0.097325</td>
+      <td>-0.230909</td>
+      <td>0.000094</td>
+      <td>0.027084</td>
+      <td>0.004634</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>DONG NAM BO 2</td>
+      <td>10645</td>
+      <td>0.003288</td>
+      <td>0.173578</td>
+      <td>35.000000</td>
+      <td>10610.000000</td>
+      <td>35.005000</td>
+      <td>10610.005000</td>
+      <td>0.150204</td>
+      <td>0.173667</td>
+      <td>-0.145145</td>
+      <td>0.000270</td>
+      <td>0.085764</td>
+      <td>0.003406</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>DONG NAM BO 3</td>
+      <td>11640</td>
+      <td>0.003608</td>
+      <td>0.189802</td>
+      <td>42.000000</td>
+      <td>11598.000000</td>
+      <td>42.005000</td>
+      <td>11598.005000</td>
+      <td>0.180240</td>
+      <td>0.189839</td>
+      <td>-0.051883</td>
+      <td>0.000320</td>
+      <td>0.093262</td>
+      <td>0.000498</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>TAY NAM BO 2</td>
+      <td>5356</td>
+      <td>0.004294</td>
+      <td>0.087335</td>
+      <td>23.000000</td>
+      <td>5333.000000</td>
+      <td>23.005000</td>
+      <td>5333.005000</td>
+      <td>0.098713</td>
+      <td>0.087292</td>
+      <td>0.122958</td>
+      <td>0.000686</td>
+      <td>0.174841</td>
+      <td>0.001404</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>MIEN TRUNG - TAY NGUYEN</td>
+      <td>6652</td>
+      <td>0.005262</td>
+      <td>0.108468</td>
+      <td>35.000000</td>
+      <td>6617.000000</td>
+      <td>35.005000</td>
+      <td>6617.005000</td>
+      <td>0.150204</td>
+      <td>0.108309</td>
+      <td>0.327010</td>
+      <td>0.000967</td>
+      <td>0.204051</td>
+      <td>0.013700</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>TAY NAM BO 1</td>
+      <td>4353</td>
+      <td>0.005284</td>
+      <td>0.070980</td>
+      <td>23.000000</td>
+      <td>4330.000000</td>
+      <td>23.005000</td>
+      <td>4330.005000</td>
+      <td>0.098713</td>
+      <td>0.070874</td>
+      <td>0.331304</td>
+      <td>0.000022</td>
+      <td>0.004295</td>
+      <td>0.009223</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>629</td>
+      <td>0.020668</td>
+      <td>0.010256</td>
+      <td>13.000000</td>
+      <td>616.000000</td>
+      <td>13.005000</td>
+      <td>616.005000</td>
+      <td>0.055803</td>
+      <td>0.010083</td>
+      <td>1.710996</td>
+      <td>0.015384</td>
+      <td>1.379691</td>
+      <td>0.078228</td>
+      <td>0.137408</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class='section'>
+<h2>missing_vs_rest</h2>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
+<div class='section'>
+<h2>no_missing</h2>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>AREA_NAME</th>
+      <th>n_obs</th>
+      <th>prop_card</th>
+      <th>prop_n_obs</th>
+      <th>n_card</th>
+      <th>n_noncard</th>
+      <th>n_card_smooth</th>
+      <th>n_noncard_smooth</th>
+      <th>prop_n_card</th>
+      <th>prop_n_noncard</th>
+      <th>WoE</th>
+      <th>diff_prop_card</th>
+      <th>diff_WoE</th>
+      <th>IV_detail</th>
+      <th>IV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MIEN BAC</td>
+      <td>3920</td>
+      <td>0.002296</td>
+      <td>0.063920</td>
+      <td>9.000000</td>
+      <td>3911.000000</td>
+      <td>9.005000</td>
+      <td>3911.005000</td>
+      <td>0.038640</td>
+      <td>0.064016</td>
+      <td>-0.504853</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.012811</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>DONG NAM BO 1</td>
+      <td>11826</td>
+      <td>0.002875</td>
+      <td>0.192835</td>
+      <td>34.000000</td>
+      <td>11792.000000</td>
+      <td>34.005000</td>
+      <td>11792.005000</td>
+      <td>0.145913</td>
+      <td>0.193014</td>
+      <td>-0.279753</td>
+      <td>0.000579</td>
+      <td>0.225100</td>
+      <td>0.013177</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>HOI SO</td>
+      <td>342</td>
+      <td>0.002924</td>
+      <td>0.005577</td>
+      <td>1.000000</td>
+      <td>341.000000</td>
+      <td>1.005000</td>
+      <td>341.005000</td>
+      <td>0.004312</td>
+      <td>0.005582</td>
+      <td>-0.257993</td>
+      <td>0.000049</td>
+      <td>0.021760</td>
+      <td>0.000327</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>HA NOI</td>
+      <td>5964</td>
+      <td>0.003018</td>
+      <td>0.097249</td>
+      <td>18.000000</td>
+      <td>5946.000000</td>
+      <td>18.005000</td>
+      <td>5946.005000</td>
+      <td>0.077258</td>
+      <td>0.097325</td>
+      <td>-0.230909</td>
+      <td>0.000094</td>
+      <td>0.027084</td>
+      <td>0.004634</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>DONG NAM BO 2</td>
+      <td>10645</td>
+      <td>0.003288</td>
+      <td>0.173578</td>
+      <td>35.000000</td>
+      <td>10610.000000</td>
+      <td>35.005000</td>
+      <td>10610.005000</td>
+      <td>0.150204</td>
+      <td>0.173667</td>
+      <td>-0.145145</td>
+      <td>0.000270</td>
+      <td>0.085764</td>
+      <td>0.003406</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>DONG NAM BO 3</td>
+      <td>11640</td>
+      <td>0.003608</td>
+      <td>0.189802</td>
+      <td>42.000000</td>
+      <td>11598.000000</td>
+      <td>42.005000</td>
+      <td>11598.005000</td>
+      <td>0.180240</td>
+      <td>0.189839</td>
+      <td>-0.051883</td>
+      <td>0.000320</td>
+      <td>0.093262</td>
+      <td>0.000498</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>TAY NAM BO 2</td>
+      <td>5356</td>
+      <td>0.004294</td>
+      <td>0.087335</td>
+      <td>23.000000</td>
+      <td>5333.000000</td>
+      <td>23.005000</td>
+      <td>5333.005000</td>
+      <td>0.098713</td>
+      <td>0.087292</td>
+      <td>0.122958</td>
+      <td>0.000686</td>
+      <td>0.174841</td>
+      <td>0.001404</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>MIEN TRUNG - TAY NGUYEN</td>
+      <td>6652</td>
+      <td>0.005262</td>
+      <td>0.108468</td>
+      <td>35.000000</td>
+      <td>6617.000000</td>
+      <td>35.005000</td>
+      <td>6617.005000</td>
+      <td>0.150204</td>
+      <td>0.108309</td>
+      <td>0.327010</td>
+      <td>0.000967</td>
+      <td>0.204051</td>
+      <td>0.013700</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td>TAY NAM BO 1</td>
+      <td>4353</td>
+      <td>0.005284</td>
+      <td>0.070980</td>
+      <td>23.000000</td>
+      <td>4330.000000</td>
+      <td>23.005000</td>
+      <td>4330.005000</td>
+      <td>0.098713</td>
+      <td>0.070874</td>
+      <td>0.331304</td>
+      <td>0.000022</td>
+      <td>0.004295</td>
+      <td>0.009223</td>
+      <td>0.137408</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>629</td>
+      <td>0.020668</td>
+      <td>0.010256</td>
+      <td>13.000000</td>
+      <td>616.000000</td>
+      <td>13.005000</td>
+      <td>616.005000</td>
+      <td>0.055803</td>
+      <td>0.010083</td>
+      <td>1.710996</td>
+      <td>0.015384</td>
+      <td>1.379691</td>
+      <td>0.078228</td>
+      <td>0.137408</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class='section'>
+<h2>WoE_Chart</h2>
+<img src='images\WoE_Chart.png' alt='WoE_Chart'>
+</div>
+</body>
+</html>
